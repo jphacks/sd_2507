@@ -6,7 +6,17 @@
 <h1>ホームページへようこそ</h1>
 <p>これはトップページです。</p>
 
-<script>
-    document.write('Hello World!!');
-</script>
+<!-- ===== Chew Counter Area ===== -->
+<video id="video" width="640" height="480" autoplay muted></video>
+<canvas id="canvas" width="640" height="480"></canvas>
+<div id="counter">Chew Count: 0</div>
+<button id="setBaselineBtn">Initialize</button>
+
+<!-- ===== Scripts ===== -->
+<!-- Mediapipe CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+<!-- あなたのロジック -->
+<script src="{{ url_for('static', filename='js/chew_counter.js') }}"></script>
 {% endblock %}
