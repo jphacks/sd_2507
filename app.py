@@ -72,6 +72,10 @@ def profile():
 def settings():
     return render_template("settings.html")
 
+@app.route("/animation_test")
+def animation_test():
+    return render_template("animation_test.html")
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     form = SignupForm()
