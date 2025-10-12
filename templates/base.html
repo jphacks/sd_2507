@@ -47,7 +47,7 @@
     </nav>
 
     <!-- ===== ログイン時のみ表示するタブバー ===== -->
-  {% if current_user.is_authenticated %}
+  {% if current_user.is_authenticated and active_tab is defined and active_tab in ['home', 'history', 'result']%}
   <div class="bg-light border-bottom">
     <div class="container">
       <ul class="nav nav-tabs nav-fill">
@@ -56,6 +56,9 @@
         </li>
         <li class="nav-item">
           <a class="nav-link {% if active_tab == 'history' %}active{% endif %}" href="{{ url_for('history') }}">履歴</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if active_tab == 'result' %}active{% endif %}" href="{{ url_for('result') }}">スコア登録</a>
         </li>
       </ul>
     </div>

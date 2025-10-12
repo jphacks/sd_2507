@@ -1,7 +1,32 @@
 {% extends "base.html" %}
-
 {% block title %}履歴{% endblock %}
 
 {% block content %}
-<h1>これは履歴です</h1>
+<h3 class="mb-4">スコア履歴</h3>
+
+<!-- フィルターボタン群 -->
+<div class="btn-group mb-4" role="group">
+  <a href="{{ url_for('history', filter='all') }}" class="btn btn-outline-secondary {% if filter_type == 'all' %}active{% endif %}">すべて</a>
+  <a href="{{ url_for('history', filter='morning') }}" class="btn btn-outline-secondary {% if filter_type == 'morning' %}active{% endif %}">朝</a>
+  <a href="{{ url_for('history', filter='afternoon') }}" class="btn btn-outline-secondary {% if filter_type == 'afternoon' %}active{% endif %}">昼</a>
+  <a href="{{ url_for('history', filter='evening') }}" class="btn btn-outline-secondary {% if filter_type == 'evening' %}active{% endif %}">夜</a>
+</div>
+
+<!-- 履歴リスト（縦方向に統一） -->
+<div class="d-flex flex-column align-items-stretch">
+  {% if scores %}
+    {% for s in scores %}
+      <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">スコア: {{ s.value }}</h5>
+          <p class="card-text text-muted mb-0">
+            登録日時: {{ s.timestamp.strftime("%Y-%m-%d %H:%M:%S") }}
+          </p>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>該当する履歴はありません。</p>
+  {% endif %}
+</div>
 {% endblock %}

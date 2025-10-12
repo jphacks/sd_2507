@@ -1,4 +1,5 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from datetime import datetime
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -24,12 +25,19 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
+    scores = db.relationship('Score', backref='users', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+class Score(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    value = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.now)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 
 @login_manager.user_loader
@@ -68,10 +76,43 @@ def about():
 def contact():
     return render_template("contact.html")
 
+@app.route("/result", methods=["GET", "POST"])
+@login_required
+def result():
+    if request.method == "POST":
+        try:
+            value = int(request.form["score"])
+            if 0 <= value <= 100:
+                new_score = Score(value=value, user_id=current_user.id)
+                db.session.add(new_score)
+                db.session.commit()
+                flash("スコアを登録しました。", "success")
+                return redirect(url_for("history"))
+            else:
+                flash("スコアは0〜100の範囲で入力してください。", "danger")
+        except ValueError:
+            flash("数値を入力してください。", "danger")
+    return render_template("result.html", active_tab="result")
+
 @app.route("/history")
 @login_required
 def history():
-    return render_template("history.html", active_tab="history")
+    # クエリパラメータ ?filter=morning / afternoon / evening
+    filter_type = request.args.get("filter", "all")
+
+    query = Score.query.filter_by(user_id=current_user.id)
+
+    # 時間帯フィルタ
+    if filter_type == "morning":
+        query = [s for s in query.all() if 5 <= s.timestamp.hour < 12]
+    elif filter_type == "afternoon":
+        query = [s for s in query.all() if 12 <= s.timestamp.hour < 18]
+    elif filter_type == "evening":
+        query = [s for s in query.all() if s.timestamp.hour >= 18 or s.timestamp.hour < 5]
+    else:
+        query = query.order_by(Score.timestamp.desc()).all()
+
+    return render_template("history.html", scores=query, active_tab="history", filter_type=filter_type)
 
 @app.route("/profile")
 def profile():

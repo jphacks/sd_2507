@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}スコア登録{% endblock %}
+
+{% block content %}
+<div class="col-md-6 mx-auto">
+  <h3 class="mb-4">スコアを登録</h3>
+  <form method="post">
+    <div class="mb-3">
+      <label for="score" class="form-label">スコア（0〜100）</label>
+      <input type="number" name="score" id="score" class="form-control" min="0" max="100" required>
+    </div>
+    <button type="submit" class="btn btn-primary">登録</button>
+  </form>
+</div>
+{% endblock %}
