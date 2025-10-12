@@ -1,35 +1,4 @@
 {% extends "base.html" %}
-<<<<<<< HEAD
-
-{% block title %}早食い防止アプリ - My App{% endblock %}
-
-{% block content %}
-<h1>ホームページへようこそ</h1>
-<p>これはトップページです。</p>
-
-<header class="header">
-  <h1 class="header-title">Chew-Weather 🍽️</h1>
-  <p class="header-subtitle">咀嚼ペースで天気が変わる早食い防止アプリ</p>
-</header>
-
-<!-- ==== Frame of website ==== -->
-
-
-<!-- ===== Chew Counter Area ===== -->
-<video id="video" width="640" height="480" autoplay muted></video>
-<canvas id="canvas" width="640" height="480"></canvas>
-<div id="counter">Chew Count: 0</div>
-<button id="setBaselineBtn">Initialize</button>
-
-<!-- ===== Scripts ===== -->
-<!-- Mediapipe CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-
-<!-- あなたのロジック -->
-<script src="{{ url_for('static', filename='js/chew_counter.js') }}"></script>
-{% endblock %}
-=======
 {% block title %}ホーム{% endblock %}
 
 {% block content %}
@@ -51,4 +20,3 @@
     </div>
   {% endif %}
 {% endblock %}
->>>>>>> history
