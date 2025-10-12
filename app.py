@@ -127,8 +127,8 @@ def settings():
 def chew_test():
     return render_template("chew_test.html")
 
-@app.route("/animation_test")
-def animation_test():
+@app.route("/test")
+def test():
     return render_template("animation_test.html")
 
 @app.route("/signup", methods=["GET", "POST"])
