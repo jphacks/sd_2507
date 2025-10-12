@@ -53,8 +53,12 @@ class LoginForm(FlaskForm):
 
 # --- ルーティング ---
 @app.route("/")
+@app.route("/index")
 def index():
-    return render_template("index.html")
+    if current_user.is_authenticated:
+        return render_template("index.html", active_tab="home")
+    else:
+        return render_template("index.html")
 
 @app.route("/about")
 def about():
@@ -63,6 +67,11 @@ def about():
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
+
+@app.route("/history")
+@login_required
+def history():
+    return render_template("history.html", active_tab="history")
 
 @app.route("/profile")
 def profile():

@@ -1,22 +1,22 @@
 {% extends "base.html" %}
-
-{% block title %}ホーム - My App{% endblock %}
+{% block title %}ホーム{% endblock %}
 
 {% block content %}
-<h1>ホームページへようこそ</h1>
-<p>これはトップページです。</p>
-
-<!-- ===== Chew Counter Area ===== -->
-<video id="video" width="640" height="480" autoplay muted></video>
-<canvas id="canvas" width="640" height="480"></canvas>
-<div id="counter">Chew Count: 0</div>
-<button id="setBaselineBtn">Initialize</button>
-
-<!-- ===== Scripts ===== -->
-<!-- Mediapipe CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-
-<!-- あなたのロジック -->
-<script src="{{ url_for('static', filename='js/chew_counter.js') }}"></script>
+  {% if not current_user.is_authenticated %}
+    <!-- ログイン前の表示 -->
+    <div class="text-center py-5">
+      <h2>ようこそ MyApp へ</h2>
+      <p class="text-muted">このサービスを利用するにはログインしてください。</p>
+      <div class="mt-4">
+        <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg me-3">ログイン</a>
+        <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg">新規登録</a>
+      </div>
+    </div>
+  {% else %}
+    <!-- ログイン後のホーム画面 -->
+    <div class="mt-4">
+      <h3>こんにちは、{{ current_user.username }} さん</h3>
+      <p>ここにホームコンテンツを配置します。</p>
+    </div>
+  {% endif %}
 {% endblock %}
