@@ -25,6 +25,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
+    total_score = db.Column(db.Integer, default=0)
     scores = db.relationship('Score', backref='users', lazy=True)
 
     def set_password(self, password):
@@ -58,13 +59,33 @@ class LoginForm(FlaskForm):
     password = PasswordField("パスワード", validators=[DataRequired()])
     submit = SubmitField("ログイン")
 
+def get_level_info(total_score):
+    """
+    累計スコアから現在のレベルと、次のレベルまでの進捗率を返す。
+    レベルアップに必要なスコアは、レベル^2 × 100 とする。
+    """
+    level = 1
+    while total_score >= (level ** 2) * 100:
+        level += 1
+
+    prev_required = ((level - 1) ** 2) * 100
+    next_required = (level ** 2) * 100
+    progress = (total_score - prev_required) / (next_required - prev_required) * 100
+
+    return {
+        "level": level,
+        "progress": progress,
+        "current": total_score,
+        "next_required": next_required
+    }
 
 # --- ルーティング ---
 @app.route("/")
 @app.route("/index")
 def index():
     if current_user.is_authenticated:
-        return render_template("index.html", active_tab="home")
+        level_info = get_level_info(current_user.total_score)
+        return render_template("index.html",  level_info=level_info, active_tab="home")
     else:
         return render_template("index.html")
 
@@ -85,6 +106,7 @@ def result():
             if 0 <= value <= 100:
                 new_score = Score(value=value, user_id=current_user.id)
                 db.session.add(new_score)
+                current_user.total_score += value
                 db.session.commit()
                 flash("スコアを登録しました。", "success")
                 return redirect(url_for("history"))

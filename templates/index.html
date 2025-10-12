@@ -4,21 +4,36 @@
 {% block content %}
   {% if not current_user.is_authenticated %}
     <!-- ログイン前の表示 -->
-    <div class="bg-body-tertiary p-5 rounded">
-        <div class="text-center py-5">
+    <div class="mt-4">
+        <div class="card shadow-sm p-4">
+        <div class="card-body text-center">
         <h2>ようこそ MyApp へ</h2>
         <p class="text-muted">このサービスを利用するにはログインしてください。</p>
         <div class="mt-4">
             <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg me-3">ログイン</a>
             <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg">新規登録</a>
         </div>
-        </div>
+      </div>
     </div>
   {% else %}
     <!-- ログイン後のホーム画面 -->
     <div class="mt-4">
-      <h3>こんにちは、{{ current_user.username }} さん</h3>
-      <p>ここにホームコンテンツを配置します。</p>
+      <div class="card shadow-sm p-4">
+        <div class="card-body text-center">
+        <h3 class="mb-3">ようこそ、{{ current_user.username }} さん！</h3>
+
+        <h5>レベル {{ level_info.level }}</h5>
+        <div class="progress mb-3" style="height: 25px;">
+            <div class="progress-bar bg-success" role="progressbar"
+                style="width: {{ level_info.progress }}%"
+                aria-valuenow="{{ level_info.progress }}" aria-valuemin="0" aria-valuemax="100">
+            {{ "%.1f"|format(level_info.progress) }}%
+            </div>
+        </div>
+
+        <p>累計スコア: {{ level_info.current }} / 次のレベルまで {{ level_info.next_required - level_info.current }}</p>
+        </div>
+      </div>
       <div class="text-center py-5">
         <div class="mt-4">
           <a href="{{ url_for('test') }}" class="btn btn-primary me-3">開始</a>
