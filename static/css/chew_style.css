@@ -1,0 +1,107 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f4f8;
+    color: #333;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header-title {
+    font-size: 2.5rem;
+    margin-bottom: 0;
+}
+
+.main-container {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.video-container {
+    position: relative;
+    width: 640px;
+    height: 480px;
+}
+
+video, canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.controls-and-data {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#startResetBtn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    background-color: #007bff; /* 青色 */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#startResetBtn:hover {
+    opacity: 0.9;
+}
+
+.stats-card, .weather-display {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.stats-card h2, .weather-display h2 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+    padding: 8px 0;
+}
+
+.stat-item span:last-child {
+    font-weight: bold;
+}
+
+.weather-display {
+    text-align: center;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+#weatherIcon {
+    font-size: 4rem;
+}
+
+#weatherLabel {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* 天気ごとのスタイル */
+.weather-display.waiting { background-color: #e9ecef; color: #495057; }
+.weather-display.sunny { background-color: #fffae6; color: #f59f00; }
+.weather-display.rain { background-color: #e7f5ff; color: #1c7ed6; }
+.weather-display.storm { background-color: #495057; color: #fff; }

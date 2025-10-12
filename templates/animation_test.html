@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}早食い防止アプリ - My App{% endblock %}
+
+{% block content %}
+
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/chew_style.css') }}">
+</head>
+<body>
+
+    <header class="header">
+        <h1 class="header-title">Chew-Weather 🍽️</h1>
+        <p class="header-subtitle">咀嚼ペースで天気が変わる早食い防止アプリ</p>
+    </header>
+
+    <div class="main-container">
+        <div class="video-container">
+            <video id="video" width="640" height="480" autoplay muted playsinline></video>
+            <canvas id="canvas" width="640" height="480"></canvas>
+        </div>
+
+        <div class="controls-and-data">
+            <button id="startResetBtn">計測開始</button>
+
+            <div id="weatherDisplay" class="weather-display waiting">
+                <div id="weatherIcon">☁️</div>
+                <div id="weatherLabel">待機中</div>
+                <p id="weatherMessage">「計測開始」を押してください</p>
+            </div>
+
+            <div class="stats-card">
+                <h2>計測データ</h2>
+                <div class="stat-item">
+                    <span>合計咀嚼回数:</span>
+                    <span id="totalChews">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>経過時間:</span>
+                    <span id="elapsedTime">0:00</span>
+                </div>
+                <div class="stat-item">
+                    <span>現在のペース:</span>
+                    <span id="pace">0 回/分</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+
+    <!-- == <script src="./your_script_name.js"></script> == -->
+    <script src="{{ url_for('static', filename='js/chew_animation.js') }}"></script>
+</body>
+</html>
+
+{% endblock %}
