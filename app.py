@@ -72,6 +72,11 @@ def profile():
 def settings():
     return render_template("settings.html")
 
+# テスト用
+@app.route("/chewtest")
+def chew_test():
+    return render_template("chew_test.html")
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     form = SignupForm()
