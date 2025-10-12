@@ -34,11 +34,6 @@
         <p>累計スコア: {{ level_info.current }} / 次のレベルまで {{ level_info.next_required - level_info.current }}</p>
         </div>
       </div>
-      <div class="text-center py-5">
-        <div class="mt-4">
-          <a href="{{ url_for('test') }}" class="btn btn-primary me-3">開始</a>
-        </div>
-      </div>
     </div>
   {% endif %}
 {% endblock %}
