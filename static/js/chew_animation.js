@@ -28,9 +28,25 @@ let lastState = "closed";
 let ratioHistory = [];
 let lastChewTime = 0;
 const SMOOTH_WINDOW = 5;
-const OPEN_THRESHOLD = 1.09;
-const CLOSE_THRESHOLD = 1.04;
+const OPEN_THRESHOLD = 1.05;
+const CLOSE_THRESHOLD = 1.01;
 const chewCooldown = 200; // ms
+
+// ======== ピーク検出用定数 ========
+const PEAK_WINDOW = 5;          // 平滑窓（検出安定性）
+const MIN_PEAK_DIFF = 0.015;    // 波の高さ閾値（感度）
+const MIN_INTERVAL = 400;       // 咀嚼間隔の最小ms
+let ratioBuffer = [];           // 波形バッファ
+
+
+let closedRatio = null;
+let lastChinZ = 0;
+let basechin = 0;
+
+const CLOSED_UPDATE_RATE = 0.05;
+const Z_STABILITY_THRESHOLD = 0.3;
+const OPEN_CHANGE_THRESHOLD = 1.03;
+
 
 // ======== FaceMesh初期化 ========
 const faceMesh = new FaceMesh({
@@ -44,7 +60,7 @@ faceMesh.setOptions({
 
 let lastLandmarks = null;
 
-// ======== FaceMesh処理（統合版） ========
+// ======== FaceMesh処理（ピーク検出版） ========
 faceMesh.onResults((results) => {
   ctx.save();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -60,26 +76,49 @@ faceMesh.onResults((results) => {
       ratioHistory.push(diff);
       if (ratioHistory.length > SMOOTH_WINDOW) ratioHistory.shift();
 
-      // 移動平均でスムージング
+      // --- 移動平均でスムージング ---
       const smoothRatio = ratioHistory.reduce((a, b) => a + b, 0) / ratioHistory.length;
 
-      const now = Date.now();
-      if (smoothRatio > OPEN_THRESHOLD && lastState === "closed") {
-        lastState = "open";
+      const chinZ = landmarks[152].z;
+      const zDelta = Math.abs(chinZ - lastChinZ);
+      lastChinZ = chinZ;
+
+      // --- z変動が大きいときは（頭を上下に動かしている）無視 ---
+      if ((zDelta * 100) > Z_STABILITY_THRESHOLD) {
+        ctx.restore();
+        return;
       }
-      else if (smoothRatio < CLOSE_THRESHOLD && lastState === "open") {
-        if (now - lastChewTime > chewCooldown) {
-          stats.chewCount++;
-          lastChewTime = now;
+
+      // --- 比率履歴バッファ（波形解析用） ---
+      ratioBuffer.push(smoothRatio);
+      if (ratioBuffer.length > PEAK_WINDOW * 2) ratioBuffer.shift();
+
+      // --- バッファが十分溜まっていればピーク検出 ---
+      if (ratioBuffer.length >= PEAK_WINDOW * 2) {
+        const mid = PEAK_WINDOW;
+        const prev = ratioBuffer.slice(0, mid);
+        const next = ratioBuffer.slice(mid + 1);
+        const current = ratioBuffer[mid];
+
+        // 局所極大（開口）
+        if (current > Math.max(...prev) && current > Math.max(...next)) {
+          const minBefore = Math.min(...prev);
+          const diffPeak = current - minBefore;
+          const now = Date.now();
+
+          // --- 差分がしきい値を超え、クールダウンを満たせば1咀嚼 ---
+          if (diffPeak > MIN_PEAK_DIFF && now - lastChewTime > MIN_INTERVAL) {
+            stats.chewCount++;
+            lastChewTime = now;
+          }
         }
-        lastState = "closed";
       }
+
     }
-
-  } 
-
+  }
   ctx.restore();
 });
+
 
 
 // ======== 統計更新 ========
@@ -95,6 +134,7 @@ function updateStats() {
   const secs = elapsedSeconds % 60;
   elapsedTimeEl.textContent = `${mins}:${String(secs).padStart(2, '0')}`;
   paceEl.textContent = `${stats.pace} 回/分`;
+
 
   updateWeather(stats.pace);
 }
@@ -165,14 +205,18 @@ function computeNormalizedRatio(landmarks) {
   const bottomLip = landmarks[14];
   const leftCheek = landmarks[234];
   const rightCheek = landmarks[454];
+  const glabella = landmarks[9];
   const chin = landmarks[152];
   const nose = landmarks[1];
+  const forehead = landmarks[10];
+  const undernose =landmarks[2];
 
-  const mouthOpen = distance(topLip, bottomLip);
+  const mouthOpen = distance(glabella, chin);
   const faceWidth = distance(leftCheek, rightCheek);
-  const faceHeight = distance(nose, chin);
+  const faceHeight = distance(forehead, nose);
 
-  return mouthOpen / ((faceWidth + faceHeight) / 2);
+  // 元の奴
+  return mouthOpen / faceWidth;
 }
 
 function distance(a, b) {
