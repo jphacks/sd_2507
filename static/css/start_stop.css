@@ -1,30 +1,57 @@
-/* 再生・停止トグルボタン */
-.fab-toggle-center {
+.fab-container {
   position: fixed;
-  bottom: 25px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1030;
-  background-color: #198754; /* 再生時 = 緑 */
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 70px;
-  height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  gap: 16px;
+  z-index: 1000;
 }
-.fab-toggle-center:hover {
-  transform: translateX(-50%) scale(1.05);
+
+.fab {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  transition: all 0.3s ease;
+  font-size: 28px;
+  color: white;
 }
-.fab-toggle-center.stop {
-  background-color: #dc3545; /* 停止時 = 赤 */
+
+.fab-primary {
+  background-color: var(--bs-primary);
 }
-.fab-toggle-center.stop:hover {
-  background-color: #bb2d3b;
+
+.fab-secondary {
+  background-color: var(--bs-secondary);
+}
+
+.fab-danger {
+  background-color: var(--bs-danger);
+}
+
+.fab:hover {
+  transform: scale(1.08);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+/* 停止ボタンの出現アニメーション */
+.fab-stop {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.fab-stop.show {
+  opacity: 1;
+  pointer-events: auto;
 }
