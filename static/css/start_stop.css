@@ -1,0 +1,30 @@
+/* 再生・停止トグルボタン */
+.fab-toggle-center {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1030;
+  background-color: #198754; /* 再生時 = 緑 */
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+.fab-toggle-center:hover {
+  transform: translateX(-50%) scale(1.05);
+}
+.fab-toggle-center.stop {
+  background-color: #dc3545; /* 停止時 = 赤 */
+}
+.fab-toggle-center.stop:hover {
+  background-color: #bb2d3b;
+}
