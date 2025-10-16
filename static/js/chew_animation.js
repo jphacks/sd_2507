@@ -18,6 +18,8 @@ const weatherMessage = document.getElementById('weatherMessage');
 // ======== 状態変数 ========
 let isTracking = false;
 let startTime = 0;
+let stopTime = 0;
+let diffTime = 0;
 let updateInterval = null;
 
 let stats = { chewCount: 0, elapsedTime: 0, pace: 0 };
@@ -161,33 +163,33 @@ function updateWeather(pace) {
 }
 
 // ======== 計測開始・リセット ========
-startResetBtn.addEventListener("click", () => {
+document.addEventListener('fab:play', () => {
   if (!isTracking) {
     // --- 計測開始 ---
     if (lastLandmarks) {
       baseline = computeNormalizedRatio(lastLandmarks);
       ratioHistory = [];
-      stats = { chewCount: 0, elapsedTime: 0, pace: 0 };
-      startTime = Date.now();
+      // stats = { chewCount: 0, elapsedTime: 0, pace: 0 };
+      startTime = Date.now() - diffTime;
       isTracking = true;
       updateInterval = setInterval(updateStats, 1000);
-
-      startResetBtn.textContent = "リセット";
-      startResetBtn.style.backgroundColor = "#dc3545";
     } else {
       alert("顔が検出されていません。カメラに顔を映してください。");
     }
-  } else {
-    // --- リセット ---
-    isTracking = false;
-    clearInterval(updateInterval);
-    baseline = null;
-    stats = { chewCount: 0, elapsedTime: 0, pace: 0 };
-    updateStats();
-    updateWeather(0);
+  } 
+});
 
-    startResetBtn.textContent = "計測開始";
-    startResetBtn.style.backgroundColor = "#007bff";
+document.addEventListener('fab:stop', () => {
+  if (isTracking) {
+    // --- リセット ---
+    stopTime = Date.now();
+    diffTime = (stopTime - startTime);
+    isTracking = false;
+    // clearInterval(updateInterval);
+    // baseline = null;
+    // stats = { chewCount: 0, elapsedTime: 0, pace: 0 };
+    // updateStats();
+    // updateWeather(0);
   }
 });
 
