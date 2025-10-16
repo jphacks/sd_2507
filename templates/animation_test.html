@@ -10,6 +10,11 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/chew_style.css') }}">
 </head>
 <body>
+    <!-- bgmの挿入 -->
+    <audio id="bgmPlayer" loop>
+        <source src="{{ url_for('static', filename='audio/bgm.mp3') }}" type="audio/mpeg">
+        お使いのブラウザは音声の再生に対応していません。
+    </audio>
 
     <header class="header">
         <h1 class="header-title">Chew-Weather 🍽️</h1>
@@ -60,6 +65,10 @@
     <!-- == <script src="./your_script_name.js"></script> == -->
     <script src="{{ url_for('static', filename='js/chew_animation.js') }}"></script>
     <script src="{{ url_for('static', filename='js/start_stop.js') }}"></script>
+
+    <!-- 開始ボタンとbgmの対応 -->
+    <script src="{{ url_for('static', filename='js/music_start.js')}}"></script>
+
 </body>
 </html>
 
