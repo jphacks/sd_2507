@@ -30,7 +30,7 @@ fabMain.addEventListener("click", () => {
     fabMain.classList.add("fab-secondary"); // ⏸時は primary
     fabMain.innerHTML = '<i class="bi bi-pause-fill"></i>';
     fabStop.classList.remove("show");
-    emitEvent("fab:resume");
+    emitEvent("fab:play");
     state = "playing";
   }
 });
