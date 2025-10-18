@@ -39,7 +39,10 @@ class Score(db.Model):
     value = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.now)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-
+    rating = db.Column(db.Integer, default=None)  # ★1〜5 の主観評価
+    chew_count = db.Column(db.Integer, default=0)
+    elapsed_time = db.Column(db.Integer, default=0)
+    pace = db.Column(db.Integer, default=0)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -101,31 +104,30 @@ def contact():
 @login_required
 def result():
     if request.method == "POST":
-        data = request.get_json()
-        if not data:
-            return jsonify({"error": "no data"}), 400
-        
-        try:
-            # スコア計算例：chewCountとpaceから重み付きで算出
-            value = int(data.get("chewCount", 0) * data.get("pace", 1))
+        # JS側から送られた統計データと評価を取得
+        value = request.form.get("value", type=int)
+        chew_count = request.form.get("chewCount", type=int)
+        elapsed_time = request.form.get("elapsedTime", type=int)
+        pace = request.form.get("pace", type=int)
+        rating = request.form.get("rating", type=int)
 
-            new_score = Score(
-                value=value,
-                user_id=current_user.id,
-                timestamp=datetime.now()
-            )
-            db.session.add(new_score)
+        # スコア登録
+        new_score = Score(
+            value=value,
+            chew_count=chew_count,
+            elapsed_time=elapsed_time,
+            pace=pace,
+            rating=rating,
+            user_id=current_user.id,
+            timestamp=datetime.now()
+        )
+        db.session.add(new_score)
+        db.session.commit()
 
-            # total_scoreを更新
-            current_user.total_score += value
-            db.session.commit()
+        flash("記録が登録されました！", "success")
+        return redirect(url_for("history"))
 
-            return jsonify({"message": "score saved", "score": value}), 200
-
-        except Exception as e:
-            db.session.rollback()
-            return jsonify({"error": str(e)}), 500
-
+    # GET時: JSで送信前のプレビュー表示
     return render_template("result.html")
 
 @app.route("/history")
