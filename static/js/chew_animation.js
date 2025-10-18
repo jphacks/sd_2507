@@ -110,8 +110,10 @@ faceMesh.onResults((results) => {
 
           // --- 差分がしきい値を超え、クールダウンを満たせば1咀嚼 ---
           if (diffPeak > MIN_PEAK_DIFF && now - lastChewTime > MIN_INTERVAL) {
-            stats.chewCount++;
-            lastChewTime = now;
+            if (isTracking){
+              stats.chewCount++;
+              lastChewTime = now;
+            }
           }
         }
       }
