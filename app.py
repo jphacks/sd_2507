@@ -6,6 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Length, EqualTo
+# 文のランダム選択に必要
+import random
 
 # Flask アプリ設定
 app = Flask(__name__)
@@ -81,11 +83,25 @@ def get_level_info(total_score):
 
 # --- ルーティング ---
 @app.route("/")
-@app.route("/index")
+@app.route("/index")    
 def index():
     if current_user.is_authenticated:
+        # レベル取得
         level_info = get_level_info(current_user.total_score)
-        return render_template("index.html",  level_info=level_info, active_tab="home")
+        # .txtからミッションを読み込む
+        
+        now = datetime.now()
+        time_seed = now.strftime("%Y-%m-%d %H:%M")
+        random.seed(time_seed)
+        try:
+            with open('sentences.txt', 'r', encoding='utf-8') as f:
+                all_sentences = [line.strip() for line in f.readlines()]
+        except FileNotFoundError:
+            return "sentences.txt が見つかりません。", 404
+        num_to_select = min(5, len(all_sentences))
+        selected_sentences = random.sample(all_sentences, num_to_select)
+        
+        return render_template("index.html",  level_info=level_info, active_tab="home", sentences = selected_sentences)
     else:
         return render_template("index.html")
 
