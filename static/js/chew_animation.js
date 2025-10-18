@@ -175,8 +175,6 @@ document.addEventListener('fab:play', () => {
       startTime = Date.now() - diffTime;
       isTracking = true;
       updateInterval = setInterval(updateStats, 1000);
-    } else {
-      alert("顔が検出されていません。カメラに顔を映してください。");
     }
   } 
 });

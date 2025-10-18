@@ -10,6 +10,10 @@ function emitEvent(name) {
 
 fabMain.addEventListener("click", () => {
   if (state === "idle") {
+    if (!lastLandmarks) {
+      alert("顔が検出されていません。カメラに顔を映してください。");
+      return;
+    }
     // ▶ 再生開始 → ボタンは ⏸（pause）に切り替わる
     fabMain.classList.remove("fab-primary");
     fabMain.classList.add("fab-secondary"); // ⏸時は primary
