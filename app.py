@@ -121,6 +121,9 @@ def result():
             user_id=current_user.id,
             timestamp=datetime.now()
         )
+        
+        # totalスコア更新
+        current_user.total_score += value
         db.session.add(new_score)
         db.session.commit()
 

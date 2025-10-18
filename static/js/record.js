@@ -4,6 +4,7 @@ document.addEventListener("fab:record", async () => {
   // 一時保存
   try {
     console.log("stats:", stats);
+    stats["value"] = stats["chewCount"]; // スコア計算
     localStorage.setItem("latestStats", JSON.stringify(stats));
   } catch (e) {
     console.error("failed to save stats", e);
