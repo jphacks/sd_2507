@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -101,20 +101,32 @@ def contact():
 @login_required
 def result():
     if request.method == "POST":
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "no data"}), 400
+        
         try:
-            value = int(request.form["score"])
-            if 0 <= value <= 100:
-                new_score = Score(value=value, user_id=current_user.id)
-                db.session.add(new_score)
-                current_user.total_score += value
-                db.session.commit()
-                flash("スコアを登録しました。", "success")
-                return redirect(url_for("history"))
-            else:
-                flash("スコアは0〜100の範囲で入力してください。", "danger")
-        except ValueError:
-            flash("数値を入力してください。", "danger")
-    return render_template("result.html", active_tab="result")
+            # スコア計算例：chewCountとpaceから重み付きで算出
+            value = int(data.get("chewCount", 0) * data.get("pace", 1))
+
+            new_score = Score(
+                value=value,
+                user_id=current_user.id,
+                timestamp=datetime.now()
+            )
+            db.session.add(new_score)
+
+            # total_scoreを更新
+            current_user.total_score += value
+            db.session.commit()
+
+            return jsonify({"message": "score saved", "score": value}), 200
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": str(e)}), 500
+
+    return render_template("result.html")
 
 @app.route("/history")
 @login_required
