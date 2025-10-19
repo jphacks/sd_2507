@@ -288,13 +288,6 @@ def history():
 
     return render_template("history.html", scores=query, active_tab="history", filter_type=filter_type)
 
-@app.route("/profile")
-def profile():
-    return render_template("profile.html")
-
-@app.route("/settings")
-def settings():
-    return render_template("settings.html")
 
 # テスト用
 @app.route("/chewtest")
