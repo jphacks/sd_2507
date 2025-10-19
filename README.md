@@ -1,6 +1,6 @@
 # Bonne App（プロダクト名）
 
-![IMAGE ALT TEXT HERE](image/Main_Image.png)
+![IMAGE ALT TEXT HERE](static/image/Main_Image.png)
 
 ## 製品概要
 ### 背景(製品開発のきっかけ、課題等）
