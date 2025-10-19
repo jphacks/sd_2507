@@ -151,6 +151,12 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
       margin: 0.3rem;
     }
+
+    /* ミッションリストを左揃えに */
+    .list-group-item {
+      text-align: left !important;
+      padding-left: 1.2rem; /* 少しだけ余白を残して見やすく */
+    }
   </style>
 </head>
 
@@ -203,10 +209,10 @@
       </div>
     </section>
 
-    <div class="card shadow-sm p-4" style="background-color:#fff8f6;">
-      <h2 class="mb-3 text-danger text-center">
-        <i class="bi bi-list-task"></i> 今日のミッション
-      </h2>
+    <div class="card shadow-sm">
+      <div class="card-header text-center">
+        <h3>Daily Mission</h3>
+      </div>
 
       {% if missions %}
         <ul class="list-group list-group-flush">
