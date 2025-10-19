@@ -33,12 +33,18 @@
 
         <p>累計スコア: {{ level_info.current }} / 次のレベルまで {{ level_info.next_required - level_info.current }}</p>
         </div>
-        <!--デイリーミッション-->
-        <h5>Daily Mission</h5>
-        <div>
-          {% for sentence in missions %}
-          <p>{{ sentence }}</p>
-          {% endfor %}
+      </div>
+      <!--デイリーミッション-->
+      <div class="container mt-4">
+        <div class="card shadow-sm">
+          <div class="card-header text-center">
+            <h3>Daily Mission</h3>
+          </div>
+          <ul class="list-group list-group-flush">
+            {% for sentence in missions %}
+              <li class="list-group-item">{{ sentence }}</li>
+            {% endfor %}
+          </ul>
         </div>
       </div>
     </div>
