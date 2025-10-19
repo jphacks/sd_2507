@@ -122,7 +122,8 @@ def index():
             
             # 日付を元に乱数を固定化し、5つを選択
             time_seed = today.strftime("%Y-%m-%d %H:%M") #今のところテストのため1分間固定
-            random.seed(str(time_seed))
+            user_specific_seed = f"{time_seed}-{current_user.id}"
+            random.seed(str(user_specific_seed))
             
             num_to_select = min(5, len(all_sentences))
             selected_sentences_content = random.sample(all_sentences, num_to_select)
