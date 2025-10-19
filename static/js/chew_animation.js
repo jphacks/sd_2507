@@ -9,12 +9,6 @@ const totalChewsEl = document.getElementById('totalChews');
 const elapsedTimeEl = document.getElementById('elapsedTime');
 const paceEl = document.getElementById('pace');
 
-// 天気表示
-const weatherDisplay = document.getElementById('weatherDisplay');
-const weatherIcon = document.getElementById('weatherIcon');
-const weatherLabel = document.getElementById('weatherLabel');
-const weatherMessage = document.getElementById('weatherMessage');
-
 // ======== 状態変数 ========
 let isTracking = false;
 let startTime = 0;
@@ -139,29 +133,6 @@ function updateStats() {
   elapsedTimeEl.textContent = `${mins}:${String(secs).padStart(2, '0')}`;
   paceEl.textContent = `${stats.pace} 回/分`;
 
-
-  updateWeather(stats.pace);
-}
-
-// ======== 天気更新 ========
-function updateWeather(pace) {
-  let weather;
-  if (!isTracking) {
-    weather = { icon: '☁️', label: '待機中', message: '「計測開始」を押してください', type: 'waiting' };
-  } else if (pace > 70) {
-    weather = { icon: '⛈️', label: '嵐', message: '速すぎです！もっとゆっくり！', type: 'storm' };
-  } else if (pace >= 50) {
-    weather = { icon: '🌧️', label: '雨', message: '少し速いペースです', type: 'rain' };
-  } else if (pace > 0) {
-    weather = { icon: '☀️', label: '晴れ', message: 'とても良いペースです！', type: 'sunny' };
-  } else {
-    weather = { icon: '☀️', label: '晴れ', message: '食事を始めましょう！', type: 'sunny' };
-  }
-
-  weatherDisplay.className = 'weather-display ' + weather.type;
-  weatherIcon.textContent = weather.icon;
-  weatherLabel.textContent = weather.label;
-  weatherMessage.textContent = weather.message;
 }
 
 // ======== 計測開始・リセット ========
@@ -185,11 +156,6 @@ document.addEventListener('fab:stop', () => {
     stopTime = Date.now();
     diffTime = (stopTime - startTime);
     isTracking = false;
-    // clearInterval(updateInterval);
-    // baseline = null;
-    // stats = { chewCount: 0, elapsedTime: 0, pace: 0 };
-    // updateStats();
-    // updateWeather(0);
   }
 });
 
@@ -217,7 +183,6 @@ function computeNormalizedRatio(landmarks) {
   const faceWidth = distance(leftCheek, rightCheek);
   const faceHeight = distance(forehead, nose);
 
-  // 元の奴
   return mouthOpen / faceWidth;
 }
 
