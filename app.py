@@ -37,7 +37,13 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-    
+
+score_mission = db.Table(
+    'score_mission',
+    db.Column('score_id', db.Integer, db.ForeignKey('score.id')),
+    db.Column('mission_id', db.Integer, db.ForeignKey('mission.id'))
+)
+
 class Score(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.Integer, nullable=False)
@@ -47,6 +53,13 @@ class Score(db.Model):
     chew_count = db.Column(db.Integer, default=0)
     elapsed_time = db.Column(db.Integer, default=0)
     pace = db.Column(db.Integer, default=0)
+
+    # このスコアで達成したミッションを関連付ける
+    missions = db.relationship(
+        'Mission',
+        secondary=score_mission,
+        backref=db.backref('scores', lazy='dynamic')
+    )
 
 class Mission(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -197,7 +210,8 @@ def inject_missions():
                 Mission.user_id == current_user.id,
                 func.date(Mission.display_date) == today
             ).order_by(Mission.id.desc()).limit(5).all()
-            missions = [m.content for m in todays]
+            # missions = [m.content for m in todays]
+            missions = todays
             missions.reverse()  # ID降順で取得しているので表示用に逆順にする
     except Exception:
         # 安全のため何か失敗してもテンプレート崩れしないよう空リストを返す
@@ -234,6 +248,18 @@ def result():
             user_id=current_user.id,
             timestamp=datetime.now()
         )
+        
+        # ミッション達成処理
+        mission_ids = request.form.getlist("mission_ids")
+        if mission_ids:
+            missions = Mission.query.filter(
+                Mission.id.in_(mission_ids),
+                Mission.user_id == current_user.id
+            ).all()
+            for m in missions:
+                m.check = True  # 達成済みに更新
+                current_user.total_score += 200
+                new_score.missions.append(m)
         
         # totalスコア更新
         current_user.total_score += value

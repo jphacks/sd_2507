@@ -29,6 +29,18 @@
           <p>咀嚼回数: {{ s.chew_count }}</p>
           <p>経過時間: {{ s.elapsed_time }} 秒</p>
           <p>ペース: {{ s.pace }} 回/分</p>
+           {% if s.missions %}
+              <ul class="list-group">
+                {% for m in s.missions %}
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ m.content }}
+                    <i class="bi bi-check-circle-fill text-success"></i>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="text-muted">達成ミッションなし</p>
+            {% endif %}
         </div>
       </div>
       {% endfor %}

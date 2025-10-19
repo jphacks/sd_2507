@@ -36,8 +36,38 @@
     <input type="hidden" name="rating" id="ratingValue" value="0">
   </div>
 
-  <button type="submit" class="btn btn-primary">記録を登録</button>
-  <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">破棄</a>
+  <!-- 🧩 ミッション一覧 -->
+
+  <div class="container mt-4">
+    <div class="card shadow-sm">
+      <div class="card-header text-center">
+        <h3>Daily Mission</h3>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for mission in missions %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ mission.content }}</span>
+            {% if mission.check == True %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" checked disabled>
+                <label class="form-check-label text-muted">達成済み</label>
+              </div>
+            {% else %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="mission_ids" value="{{ mission.id }}">
+                <label class="form-check-label">達成</label>
+              </div>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <button type="submit" class="btn btn-primary">記録を登録</button>
+    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">破棄</a>
+  </div>
 </form>
 
 <!-- Bootstrapアイコン -->
