@@ -6,6 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Length, EqualTo
+# 文のランダム選択に必要
+import random
 
 # Flask アプリ設定
 app = Flask(__name__)
@@ -43,6 +45,13 @@ class Score(db.Model):
     chew_count = db.Column(db.Integer, default=0)
     elapsed_time = db.Column(db.Integer, default=0)
     pace = db.Column(db.Integer, default=0)
+
+class Mission(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    check = db.Column(db.Boolean)
+    content = db.Column(db.String(200), nullable=False)
+    display_date = db.Column(db.Date, nullable=False, default=datetime.today) #default= datetime.today
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -87,11 +96,88 @@ def get_level_info(total_score):
 @app.route("/index")
 def index():
     if current_user.is_authenticated:
+        # --- 1. 今日の日付で、既にミッションがDBに存在するか確認 ---
+        today = datetime.now()
+        existing_missions = Mission.query.filter_by(
+            user_id=current_user.id,
+            display_date=today
+        ).all()
+
+        # テンプレートに渡すためのミッション内容（文字列）のリストを準備
+        missions_to_display = []
+
+        # --- 2. DBにミッションが存在した場合の処理 ---
+        if existing_missions:
+            # データベースのオブジェクトから内容(content)のみを抽出してリストに追加
+            missions_to_display = [mission.content for mission in existing_missions]
+            
+        # --- 3. DBにミッションが存在しなかった場合の処理 ---
+        else:
+            # .txtからミッションの原文を読み込む
+            try:
+                with open('sentences.txt', 'r', encoding='utf-8') as f:
+                    all_sentences = [line.strip() for line in f if line.strip()]
+            except FileNotFoundError:
+                return "sentences.txt が見つかりません。", 404
+            
+            # 日付を元に乱数を固定化し、5つを選択
+            time_seed = today.strftime("%Y-%m-%d %H:%M") #今のところテストのため1分間固定
+            random.seed(str(time_seed))
+            
+            num_to_select = min(5, len(all_sentences))
+            selected_sentences_content = random.sample(all_sentences, num_to_select)
+            
+            # --- 4. 生成したミッションをDBに保存 ---
+            for sentence in selected_sentences_content:
+                # Missionオブジェクトを作成してDBセッションに追加
+                new_mission = Mission(
+                    content=sentence,
+                    display_date=today,
+                    user_id=current_user.id
+                )
+                db.session.add(new_mission)
+            
+            db.session.commit() # データベースに変更を確定
+            
+            # 表示用リストに、生成したミッション内容をセット
+            missions_to_display = selected_sentences_content
+
+        # レベル情報を取得
         level_info = get_level_info(current_user.total_score)
-        return render_template("index.html",  level_info=level_info, active_tab="home")
+        
+        # 結果をテンプレートに渡して表示
+        return render_template("index.html",
+                               level_info=level_info,
+                               active_tab="home",
+                               # missions変数に文字列のリストを渡す
+                               missions=missions_to_display)
     else:
+        # ログインしていないユーザー向けの表示
         return render_template("index.html")
 
+"""""""""    
+def index():
+    if current_user.is_authenticated:
+        # レベル取得
+        level_info = get_level_info(current_user.total_score)
+        # .txtからミッションを読み込む
+        
+        now = datetime.now()
+        # 一日ごとに変更する(今のところテストのため1分ごとに変更する)
+        time_seed = now.strftime("%Y-%m-%d %H:%M")
+        random.seed(time_seed)
+        try:
+            with open('sentences.txt', 'r', encoding='utf-8') as f:
+                all_sentences = [line.strip() for line in f.readlines()]
+        except FileNotFoundError:
+            return "sentences.txt が見つかりません。", 404
+        num_to_select = min(5, len(all_sentences))
+        selected_sentences = random.sample(all_sentences, num_to_select)
+        
+        return render_template("index.html",  level_info=level_info, active_tab="home", sentences = selected_sentences)
+    else:
+        return render_template("index.html")
+"""""""""
 @app.route("/about")
 def about():
     return render_template("about.html")

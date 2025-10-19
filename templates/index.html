@@ -33,6 +33,13 @@
 
         <p>累計スコア: {{ level_info.current }} / 次のレベルまで {{ level_info.next_required - level_info.current }}</p>
         </div>
+        <!--デイリーミッション-->
+        <h5>Daily Mission</h5>
+        <div>
+          {% for sentence in missions %}
+          <p>{{ sentence }}</p>
+          {% endfor %}
+        </div>
       </div>
     </div>
   {% endif %}
