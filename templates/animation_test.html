@@ -191,6 +191,27 @@
     </section>
   </div>
 
+  <!-- === 今日のミッション === -->
+  <div class="container mt-5 mb-5">
+    <div class="card shadow-sm p-4" style="background-color:#fff8f6;">
+      <h2 class="mb-3 text-danger text-center">
+        <i class="bi bi-list-task"></i> 今日のミッション
+      </h2>
+
+      {% if missions %}
+        <ul class="list-group list-group-flush">
+          {% for mission in missions %}
+            <li class="list-group-item">
+              {{ mission }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted text-center mt-3">本日のミッションはまだありません。</p>
+      {% endif %}
+    </div>
+  </div>
+
   <!-- === 再生・停止ボタン === -->
   <div class="fab-container">
     <button id="fab-main" class="fab fab-primary">

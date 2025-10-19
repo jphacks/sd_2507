@@ -6,6 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Length, EqualTo
+from sqlalchemy import func
+from datetime import date
 # 文のランダム選択に必要
 import random
 
@@ -179,6 +181,30 @@ def index():
     else:
         return render_template("index.html")
 """""""""
+
+from datetime import date
+from sqlalchemy import func
+
+@app.context_processor
+def inject_missions():
+    missions = []
+    try:
+        if current_user.is_authenticated:
+            # DB上の display_date の日付部分が今日のものを取得
+            today = date.today()
+            todays = Mission.query.filter(
+                Mission.user_id == current_user.id,
+                func.date(Mission.display_date) == today
+            ).order_by(Mission.id.desc()).limit(5).all()
+            missions = [m.content for m in todays]
+            missions.reverse()  # ID降順で取得しているので表示用に逆順にする
+    except Exception:
+        # 安全のため何か失敗してもテンプレート崩れしないよう空リストを返す
+        missions = []
+    return dict(missions=missions)
+
+
+
 @app.route("/about")
 def about():
     return render_template("about.html")
