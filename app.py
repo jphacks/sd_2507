@@ -223,10 +223,6 @@ def inject_missions():
 def about():
     return render_template("about.html")
 
-@app.route("/contact")
-def contact():
-    return render_template("contact.html")
-
 @app.route("/result", methods=["GET", "POST"])
 @login_required
 def result():
