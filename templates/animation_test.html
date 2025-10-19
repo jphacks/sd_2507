@@ -158,6 +158,14 @@
       color: #444;
     }
 
+    /* 非表示状態 */
+    .hidden-section {
+      visibility: hidden;
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+    }
+
     /* === トグルボタン === */
     .toggle-btn {
       border: none;
@@ -274,7 +282,7 @@
         <ul class="list-group list-group-flush">
           {% for mission in missions %}
             <li class="list-group-item">
-              {{ mission }}
+              {{ mission.content }}
             </li>
           {% endfor %}
         </ul>
