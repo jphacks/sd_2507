@@ -156,29 +156,6 @@ def index():
         # ログインしていないユーザー向けの表示
         return render_template("index.html")
 
-"""""""""    
-def index():
-    if current_user.is_authenticated:
-        # レベル取得
-        level_info = get_level_info(current_user.total_score)
-        # .txtからミッションを読み込む
-        
-        now = datetime.now()
-        # 一日ごとに変更する(今のところテストのため1分ごとに変更する)
-        time_seed = now.strftime("%Y-%m-%d %H:%M")
-        random.seed(time_seed)
-        try:
-            with open('sentences.txt', 'r', encoding='utf-8') as f:
-                all_sentences = [line.strip() for line in f.readlines()]
-        except FileNotFoundError:
-            return "sentences.txt が見つかりません。", 404
-        num_to_select = min(5, len(all_sentences))
-        selected_sentences = random.sample(all_sentences, num_to_select)
-        
-        return render_template("index.html",  level_info=level_info, active_tab="home", sentences = selected_sentences)
-    else:
-        return render_template("index.html")
-"""""""""
 @app.route("/about")
 def about():
     return render_template("about.html")
