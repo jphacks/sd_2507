@@ -13,26 +13,28 @@
       font-family: "Noto Sans JP", sans-serif;
       text-align: center;
       margin: 0;
+      color: #444;
     }
 
+    /* === ヘッダー === */
     .header-title {
       font-size: 2rem;
-      font-weight: bold;
-      color: #d9534f;
+      font-weight: 700;
+      color: #c0392b;
       margin-top: 1rem;
     }
 
     .header-subtitle {
-      color: #555;
+      color: #888;
       font-size: 1rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
-    
-    /* ===== 時計型タイマー ===== */
+
+    /* === 時計タイマー === */
     .timer-wrapper {
       position: relative;
-      width: 150px;
-      height: 150px;
+      width: 160px;
+      height: 160px;
       margin: 0 auto 1.5rem auto;
     }
 
@@ -40,22 +42,22 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 150px;
-      height: 150px;
+      width: 160px;
+      height: 160px;
       border-radius: 50%;
       background: conic-gradient(
-        #d9534f var(--progress, 0%),
-        #f3e3e2 var(--progress, 0%)
+        #e57373 var(--progress, 0%),
+        #f8d7da var(--progress, 0%)
       );
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     }
 
     .timer-inner {
-      width: 120px;
-      height: 120px;
+      width: 125px;
+      height: 125px;
       border-radius: 50%;
       background: #fffaf7;
       display: flex;
@@ -63,7 +65,7 @@
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      color: #721c24;
+      color: #c0392b;
     }
 
     .timer-label {
@@ -77,16 +79,17 @@
       letter-spacing: 1px;
     }
 
+    /* === 映像エリア === */
     .video-container {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 1rem auto;
-      transition: opacity 0.3s ease;
+      margin: 1.2rem auto;
       position: relative;
       width: 100%;
-      max-width: 640px; /* 元の最大サイズ */
-      aspect-ratio: 4 / 3; /* 縦横比固定 */
+      max-width: 640px;
+      aspect-ratio: 4 / 3;
+      transition: opacity 0.3s ease;
     }
 
     video, canvas {
@@ -95,67 +98,120 @@
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover; /* 画面比が違う場合でも自然に縮小 */
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
     }
 
-    /* 小さい画面で少し余白を保つ */
     @media (max-width: 400px) {
       .video-container {
         max-width: 90vw;
       }
     }
 
+    /* === 計測データカード === */
     .stats-card {
-      margin: 1.5rem auto;
-      max-width: 400px;
+      margin: 1.8rem auto;
+      max-width: 420px;
       text-align: left;
       transition: opacity 0.3s ease;
+      border: none;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-title {
+      color: #c0392b;
+      font-size: 1.3rem;
+      font-weight: 600;
     }
 
     .stat-item {
       display: flex;
       justify-content: space-between;
-      font-size: 1.1rem;
-      margin: 0.5rem 0;
-      padding: 0.4rem 0.8rem;
+      font-size: 1rem;
+      margin: 0.4rem 0;
+      padding: 0.5rem 0.8rem;
       border-bottom: 1px solid #eee;
+      color: #555;
     }
 
-    .fab-container {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
+    /* === ミッションカード === */
+    .card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
     }
 
-    /* 非表示状態 */
-    .hidden-section {
-      visibility: hidden;
-      opacity: 0;
-      height: 0;
-      overflow: hidden;
+    .card-header {
+      background: #f8d7da;
+      color: #721c24;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
     }
 
+    .list-group-item {
+      text-align: left !important;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
+      color: #444;
+    }
+
+    /* === トグルボタン === */
     .toggle-btn {
       border: none;
       background: #f8d7da;
-      color: #721c24;
+      color: #c0392b;
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      font-size: 1.4rem;
+      width: 42px;
+      height: 42px;
+      font-size: 1.3rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
       margin: 0.3rem;
+      transition: all 0.2s ease;
     }
 
-    /* ミッションリストを左揃えに */
-    .list-group-item {
-      text-align: left !important;
-      padding-left: 1.2rem; /* 少しだけ余白を残して見やすく */
+    .toggle-btn:hover {
+      background: #e57373;
+      color: white;
+    }
+
+    /* === FABボタン === */
+    .fab-container {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+    }
+
+    .fab {
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 1.8rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .fab-primary {
+      background: #059100;
+      color: white;
+    }
+
+    .fab-danger {
+      background: #c0392b;
+      color: white;
+    }
+
+    .fab:hover {
+      transform: scale(1.07);
+      opacity: 0.9;
     }
   </style>
 </head>
