@@ -134,7 +134,8 @@ def index():
                 new_mission = Mission(
                     content=sentence,
                     display_date=today,
-                    user_id=current_user.id
+                    user_id=current_user.id,
+                    check=False
                 )
                 db.session.add(new_mission)
             
