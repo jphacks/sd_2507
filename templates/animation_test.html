@@ -1,5 +1,3 @@
-{% block title %}My App{% endblock %}
-
 {% block content %}
 <head>
   <!-- Bootstrap & アイコン -->
@@ -85,13 +83,28 @@
       align-items: center;
       margin: 1rem auto;
       transition: opacity 0.3s ease;
+      position: relative;
+      width: 100%;
+      max-width: 640px; /* 元の最大サイズ */
+      aspect-ratio: 4 / 3; /* 縦横比固定 */
     }
 
     video, canvas {
-      max-width: 100%;
-      height: auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* 画面比が違う場合でも自然に縮小 */
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 小さい画面で少し余白を保つ */
+    @media (max-width: 400px) {
+      .video-container {
+        max-width: 90vw;
+      }
     }
 
     .stats-card {
@@ -138,6 +151,12 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
       margin: 0.3rem;
     }
+
+    /* ミッションリストを左揃えに */
+    .list-group-item {
+      text-align: left !important;
+      padding-left: 1.2rem; /* 少しだけ余白を残して見やすく */
+    }
   </style>
 </head>
 
@@ -151,7 +170,7 @@
   <div class="container py-4">
     <!-- === アプリ名 === -->
     <header class="mb-4">
-      <h1 class="header-title">bonne app</h1>
+      <h1 class="header-title">Bonne App</h1>
       <p class="header-subtitle">ながら食べ防止アプリ</p>
     </header>
 
@@ -189,14 +208,11 @@
         <span id="pace">0 回/分</span>
       </div>
     </section>
-  </div>
 
-  <!-- === 今日のミッション === -->
-  <div class="container mt-5 mb-5">
-    <div class="card shadow-sm p-4" style="background-color:#fff8f6;">
-      <h2 class="mb-3 text-danger text-center">
-        <i class="bi bi-list-task"></i> 今日のミッション
-      </h2>
+    <div class="card shadow-sm">
+      <div class="card-header text-center">
+        <h3>Daily Mission</h3>
+      </div>
 
       {% if missions %}
         <ul class="list-group list-group-flush">
@@ -210,6 +226,10 @@
         <p class="text-muted text-center mt-3">本日のミッションはまだありません。</p>
       {% endif %}
     </div>
+  </div>
+
+  <!-- === 今日のミッション === -->
+  <div class="container mt-5 mb-5">
   </div>
 
   <!-- === 再生・停止ボタン === -->
