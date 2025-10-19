@@ -136,7 +136,8 @@ def index():
                 new_mission = Mission(
                     content=sentence,
                     display_date=today,
-                    user_id=current_user.id
+                    user_id=current_user.id,
+                    check=False
                 )
                 db.session.add(new_mission)
             
@@ -202,7 +203,6 @@ def inject_missions():
         # 安全のため何か失敗してもテンプレート崩れしないよう空リストを返す
         missions = []
     return dict(missions=missions)
-
 
 
 @app.route("/about")
